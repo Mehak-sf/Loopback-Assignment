@@ -1,7 +1,16 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Customer} from './customer.model';
 
-@model({settings: {strict: false}})
+@model()
 export class User extends Entity {
+  @property({
+    type: 'string',
+    id: true,
+    generated: false,
+    required: true,
+  })
+  id: string;
+
   @property({
     type: 'string',
     required: true,
@@ -15,8 +24,9 @@ export class User extends Entity {
 
   @property({
     type: 'string',
+    required: true,
   })
-  lastName?: string;
+  lastName: string;
 
   @property({
     type: 'string',
@@ -33,6 +43,9 @@ export class User extends Entity {
   @property({
     type: 'string',
     required: true,
+    jsonSchema: {
+      enum: ['ADMIN', 'MODERATOR', 'USER'],
+    },
   })
   role: string;
 
@@ -42,11 +55,8 @@ export class User extends Entity {
   })
   address: string;
 
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @belongsTo(() => Customer)
+  customerId: string;
 
   constructor(data?: Partial<User>) {
     super(data);
@@ -54,7 +64,7 @@ export class User extends Entity {
 }
 
 export interface UserRelations {
-  // describe navigational properties here
+  // define navigational properties here
 }
 
 export type UserWithRelations = User & UserRelations;
